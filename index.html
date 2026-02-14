@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toko Mang Bashir - Toko Online<oko /title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="main-header">
+        <div class="top-bar">
+            <div class="container">
+                <span><i class="fas fa-truck"></i> Gratis Ongkir untuk pembelian di atas Rp 500.000</span>
+                <div class="top-links">
+                    <a href="#" onclick="openModal('auth', 'login')"><i class="fas fa-sign-in-alt"></i> Masuk</a>
+                    <a href="#" onclick="openModal('auth', 'register')"><i class="fas fa-user-plus"></i> Daftar</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Bantuan</a>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="main-nav">
+            <div class="container">
+                <div class="logo">
+                    <h1><i class="fas fa-shopping-bag"></i> Toko Mang Bashir</h1>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Cari produk..." autocomplete="off">
+                    <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+                    <div id="searchSuggestions" class="suggestions"></div>
+                </div>
+                
+                <div class="nav-icons">
+                    <div class="icon-wrapper" onclick="toggleWishlist()" title="Wishlist">
+                        <i class="fas fa-heart"></i>
+                        <span class="badge" id="wishlistCount">0</span>
+                    </div>
+                    <div class="icon-wrapper" onclick="toggleCart()" title="Keranjang">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="badge" id="cartCount">0</span>
+                    </div>
+                    <div class="icon-wrapper" onclick="toggleChat()" title="Live Chat">
+                        <i class="fas fa-comments"></i>
+                        <span class="badge live" id="chatNotif" style="display: none">!</span>
+                    </div>
+                    <div class="icon-wrapper user-menu" id="userMenu" style="display: none">
+                        <i class="fas fa-user"></i>
+                        <div class="dropdown">
+                            <a href="#" onclick="showProfile()"><i class="fas fa-id-card"></i> Profil Saya</a>
+                            <a href="#" onclick="showOrders()"><i class="fas fa-box"></i> Pesanan Saya</a>
+                            <a href="#" onclick="showWishlist()"><i class="fas fa-heart"></i> Wishlist</a>
+                            <div class="divider"></div>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+                        </div>
+                    </div>
+                    <div class="icon-wrapper" id="loginIcon" onclick="openModal('auth', 'login')">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <div class="category-nav" id="categoryNav">
+            <div class="container">
+                <ul>
+                    <li><a href="#" class="active" onclick="filterByCategory('all')">Semua</a></li>
+                    <li><a href="#" onclick="filterByCategory('elektronik')">Elektronik</a></li>
+                    <li><a href="#" onclick="filterByCategory('fashion')">Fashion</a></li>
+                    <li><a href="#" onclick="filterByCategory('rumah-tangga')">Rumah Tangga</a></li>
+                    <li><a href="#" onclick="filterByCategory('kecantikan')">Kecantikan</a></li>
+                    <li><a href="#" onclick="filterByCategory('olahraga')">Olahraga</a></li>
+                    <li><a href="#" onclick="filterByCategory('makanan')">Makanan</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-slider" id="heroSlider">
+                <div class="slide active">
+                    <img src="https://images.unsplash.com/photo-1607082348824-92a272e3185f?w=1200" alt="Promo">
+                    <div class="slide-content">
+                        <span class="badge-hero">Flash Sale</span>
+                        <h2>Diskon Hingga 70%</h2>
+                        <p>Dapatkan produk terbaik dengan harga terbaik. Periode terbatas!</p>
+                        <button class="btn-primary" onclick="scrollToProducts()">Belanja Sekarang</button>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200" alt="Fashion">
+                    <div class="slide-content">
+                        <span class="badge-hero">New Collection</span>
+                        <h2>Fashion 2024</h2>
+                        <p>Tampil stylish dengan koleksi terbaru kami</p>
+                        <button class="btn-primary" onclick="filterByCategory('fashion')">Lihat Koleksi</button>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200" alt="Gadget">
+                    <div class="slide-content">
+                        <span class="badge-hero">Best Seller</span>
+                        <h2>Gadget Terbaru</h2>
+                        <p>Teknologi canggih untuk gaya hidup modern</p>
+                        <button class="btn-primary" onclick="filterByCategory('elektronik')">Lihat Produk</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Recommendations -->
+            <div class="ai-recommendation-box" id="aiRecommendBox" style="display: none">
+                <div class="ai-header">
+                    <i class="fas fa-robot"></i>
+                    <span>Rekomendasi Untuk Anda</span>
+                    <small>Powered by AI</small>
+                </div>
+                <div class="ai-products" id="aiProducts"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flash Sale Section -->
+    <section class="flash-sale-section" id="flashSale">
+        <div class="container">
+            <div class="flash-header">
+                <div>
+                    <h3><i class="fas fa-bolt"></i> Flash Sale</h3>
+                    <p>Diskon besar-besaran, jangan sampai kehabisan!</p>
+                </div>
+                <div class="countdown" id="countdown">
+                    <span>00</span> :
+                    <span>00</span> :
+                    <span>00</span>
+                </div>
+            </div>
+            <div class="product-grid horizontal" id="flashSaleGrid"></div>
+        </div>
+    </section>
+
+    <!-- Main Product Catalog -->
+    <section class="product-section" id="products">
+        <div class="container">
+            <div class="section-header">
+                <h2>Katalog Produk</h2>
+                <div class="filters">
+                    <select id="sortFilter" onchange="sortProducts()">
+                        <option value="newest">Terbaru</option>
+                        <option value="price-low">Harga: Rendah ke Tinggi</option>
+                        <option value="price-high">Harga: Tinggi ke Rendah</option>
+                        <option value="popular">Paling Populer</option>
+                        <option value="rating">Rating Tertinggi</option>
+                    </select>
+                    <div class="view-toggle">
+                        <button class="active" onclick="toggleView('grid')"><i class="fas fa-th"></i></button>
+                        <button onclick="toggleView('list')"><i class="fas fa-list"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="active-filters" id="activeFilters"></div>
+            
+            <div class="product-grid" id="productGrid"></div>
+            
+            <div class="loading" id="loadingProducts" style="display: none">
+                <div class="spinner"></div>
+                <p>Memuat produk...</p>
+            </div>
+            
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </section>
+    
+        <!-- Features Banner -->
+    <section class="features-banner">
+        <div class="container">
+            <div class="feature-item">
+                <i class="fas fa-shipping-fast"></i>
+                <div>
+                    <h4>Pengiriman Cepat</h4>
+                    <p>2-5 hari kerja</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h4>Pembayaran Aman</h4>
+                    <p>100% terjamin</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-undo"></i>
+                <div>
+                    <h4>Garansi 7 Hari</h4>
+                    <p>Retur mudah</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-headset"></i>
+                <div>
+                    <h4>Support 24/7</h4>
+                    <p>Siap membantu</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+        <!-- Multi-Vendor Section -->
+    <section class="vendor-section">
+        <div class="container">
+            <div class="section-title">
+                <h3>Toko Terpercaya</h3>
+                <a href="#" onclick="showAllVendors()">Lihat Semua <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="vendor-grid" id="vendorGrid"></div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h3>Dapatkan Update Terbaru</h3>
+                <p>Berlangganan newsletter untuk promo eksklusif</p>
+                <form onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="Email Anda" required>
+                    <button type="submit">Berlangganan</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4><i class="fas fa-shopping-bag"></i> Toko Mang Bashir</h4>
+                    <p>Toko online terpercaya dengan berbagai produk berkualitas. Belanja mudah, aman, dan nyaman.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Belanja</h4>
+                    <ul>
+                        <li><a href="#">Semua Produk</a></li>
+                        <li><a href="#">Flash Sale</a></li>
+                        <li><a href="#">Produk Baru</a></li>
+                        <li><a href="#">Best Seller</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Bantuan</h4>
+                    <ul>
+                        <li><a href="#">Cara Belanja</a></li>
+                        <li><a href="#">Pengiriman</a></li>
+                        <li><a href="#">Pengembalian</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Kontak</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</li>
+                        <li><i class="fas fa-phone"></i> 0800-1234-5678</li>
+                        <li><i class="fas fa-envelope"></i> tokomangbashir@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Toko Mang Bashir. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h3>
+            <button class="close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <strong id="cartTotal">Rp 0</strong>
+            </div>
+            <button class="btn-checkout" onclick="proceedToCheckout()">
+                Lanjutkan Pembayaran <i class="fas fa-arrow-right"></i>
+            </button>
+            <button class="btn-continue" onclick="toggleCart()">
+                Lanjut Belanja
+            </button>
+        </div>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div class="wishlist-sidebar" id="wishlistSidebar">
+        <div class="wishlist-header">
+            <h3><i class="fas fa-heart"></i> Wishlist</h3>
+            <button class="close-btn" onclick="toggleWishlist()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="wishlist-items" id="wishlistItems"></div>
+        <div class="wishlist-footer">
+            <button class="btn-primary" onclick="addAllWishlistToCart()">
+                Tambah Semua ke Keranjang
+            </button>
+        </div>
+    </div>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget minimized" id="chatWidget">
+        <div class="chat-header" onclick="toggleChat()">
+            <div class="chat-title">
+                <i class="fas fa-headset"></i>
+                <span>Live Chat Support</span>
+                <span class="status online">Online</span>
+            </div>
+            <button class="close-btn" onclick="event.stopPropagation(); toggleChat()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Ketik pesan..." onkeypress="handleChatKey(event)">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content product-detail">
+            <button class="close-btn" onclick="closeModal('product')"><i class="fas fa-times"></i></button>
+            <div class="product-detail-grid">
+                <div class="product-images">
+                    <div class="main-image-container">
+                        <img id="modalMainImage" src="" alt="">
+                        <div class="image-zoom" id="imageZoom"></div>
+                    </div>
+                    <div class="thumbnail-list" id="modalThumbnails"></div>
+                </div>
+                <div class="product-info">
+                    <span class="vendor-name" id="modalVendor"></span>
+                    <h2 id="modalTitle"></h2>
+                    <div class="rating" id="modalRating"></div>
+                    <div class="sold-count" id="modalSold"></div>
+                    <div class="price-container">
+                        <div class="price" id="modalPrice"></div>
+                        <div class="original-price" id="modalOriginalPrice"></div>
+                        <div class="discount-badge" id="modalDiscount"></div>
+                    </div>
+                    <div class="stock-info" id="modalStock"></div>
+                    <p class="description" id="modalDesc"></p>
+                    
+                    <div class="variants" id="modalVariants"></div>
+                    
+                    <div class="quantity-section">
+                        <label>Jumlah:</label>
+                        <div class="quantity-selector">
+                            <button onclick="adjustQty(-1)">-</button>
+                            <input type="number" id="modalQty" value="1" min="1" max="99">
+                            <button onclick="adjustQty(1)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn-add-cart" onclick="addToCartFromModal()">
+                            <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+                        </button>
+                        <button class="btn-wishlist" id="modalWishlistBtn" onclick="toggleWishlistFromModal()">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="btn-share" onclick="shareProduct()">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="product-meta">
+                        <div><i class="fas fa-truck"></i> Gratis ongkir min. Rp 500rb</div>
+                        <div><i class="fas fa-shield-alt"></i> Garansi resmi</div>
+                        <div><i class="fas fa-undo"></i> 7 hari retur</div>
+                    </div>
+                    
+                    <!-- Reviews Section -->
+                    <div class="reviews-section">
+                        <div class="reviews-header">
+                            <h4>Ulasan Pelanggan</h4>
+                            <span id="reviewCount"></span>
+                        </div>
+                        <div class="reviews-summary" id="reviewsSummary"></div>
+                        <div class="reviews-list" id="modalReviews"></div>
+                        <div class="add-review" id="addReviewSection">
+                            <h5>Tulis Ulasan</h5>
+                            <textarea id="reviewText" placeholder="Bagaimana pengalaman Anda dengan produk ini?"></textarea>
+                            <div class="star-rating-input" id="starRatingInput">
+                                <i class="far fa-star" data-rating="1"></i>
+                                <i class="far fa-star" data-rating="2"></i>
+                                <i class="far fa-star" data-rating="3"></i>
+                                <i class="far fa-star" data-rating="4"></i>
+                                <i class="far fa-star" data-rating="5"></i>
+                            </div>
+                            <button onclick="submitReview()" class="btn-submit-review">Kirim Ulasan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content checkout-form">
+            <button class="close-btn" onclick="closeModal('checkout')"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+            
+            <div class="checkout-steps">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Pengiriman</span>
+                </div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Pembayaran</span>
+                </div>
+                <div class="step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Konfirmasi</span>
+                </div>
+            </div>
+            
+            <div class="checkout-content">
+                <!-- Step 1: Shipping -->
+                <div class="checkout-step-content active" id="step1">
+                    <h3>Alamat Pengiriman</h3>
+                    <form id="shippingForm">
+                        <div class="form-row">
+                            <input type="text" name="name" placeholder="Nama Lengkap" required>
+                            <input type="tel" name="phone" placeholder="Nomor Telepon" required>
+                        </div>
+                        <textarea name="address" placeholder="Alamat Lengkap (Jalan, RT/RW, Kelurahan)" required></textarea>
+                        <div class="form-row">
+                            <select name="province" id="provinceSelect" required onchange="loadCities()">
+                                <option value="">Pilih Provinsi</option>
+                            </select>
+                            <select name="city" id="citySelect" required>
+                                <option value="">Pilih Kota</option>
+                            </select>
+                        </div>
+                        <input type="text" name="postal" placeholder="Kode Pos" required pattern="[0-9]{5}">
+                    </form>
+                    <button class="btn-next" onclick="nextStep(2)">
+                        Lanjut ke Pembayaran <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <!-- Step 2: Payment -->
+                <div class="checkout-step-content" id="step2">
+                    <h3>Metode Pembayaran</h3>
+                    <div class="payment-methods" id="paymentMethods">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="transfer_bca" checked>
+                            <div class="payment-box">
+                                <img src="https://via.placeholder.com/40/005FAF/FFFFFF?text=BCA" alt="BCA">
+                                <div>
+                                    <span class="payment-name">Transfer BCA</span>
+                                    <small>Virtual Account</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="transfer_bni">
+                            <div class="payment-box">
+                                <img src="https://via.placeholder.com/40/005690/FFFFFF?text=BNI" alt="BNI">
+                                <div>
+                                    <span class="payment-name">Transfer BNI</span>
+                                    <small>Virtual Account</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="credit_card">
+                            <div class="payment-box">
+                                <i class="fas fa-credit-card" style="color: #6366f1; font-size: 24px;"></i>
+                                <div>
+                                    <span class="payment-name">Kartu Kredit</span>
+                                    <small>Visa, Mastercard, JCB</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="gopay">
+                            <div class="payment-box">
+                                <img src="https://via.placeholder.com/40/00ADB5/FFFFFF?text=GoPay" alt="GoPay">
+                                <div>
+                                    <span class="payment-name">GoPay</span>
+                                    <small>Scan QR</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="ovo">
+                            <div class="payment-box">
+                                <img src="https://via.placeholder.com/40/4B2178/FFFFFF?text=OVO" alt="OVO">
+                                <div>
+                                    <span class="payment-name">OVO</span>
+                                    <small>Cashback 1%</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="cod">
+                            <div class="payment-box">
+                                <i class="fas fa-money-bill-wave" style="color: #10b981; font-size: 24px;"></i>
+                                <div>
+                                    <span class="payment-name">Bayar di Tempat (COD)</span>
+                                    <small>Tunai saat terima</small>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <h4>Ringkasan Pesanan</h4>
+                        <div id="checkoutItems"></div>
+                        <div class="summary-details">
+                            <div class="summary-row">
+                                <span>Subtotal Produk</span>
+                                <span id="checkoutSubtotal">Rp 0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Ongkos Kirim</span>
+                                <span id="checkoutShipping">Rp 0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Biaya Layanan</span>
+                                <span id="checkoutFee">Rp 0</span>
+                            </div>
+                            <div class="summary-row discount" id="discountRow" style="display: none">
+                                <span>Diskon</span>
+                                <span id="checkoutDiscount">-Rp 0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total Pembayaran</span>
+                                <strong id="checkoutTotal">Rp 0</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-actions">
+                        <button class="btn-back" onclick="prevStep(1)">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button class="btn-pay" onclick="processPayment()">
+                            Bayar Sekarang <i class="fas fa-lock"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Confirmation -->
+                <div class="checkout-step-content" id="step3">
+                    <div class="confirmation-box" id="confirmationBox">
+                        <div class="confirmation-icon">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <h3>Memproses Pembayaran...</h3>
+                        <p>Mohon tunggu sebentar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Tracking Modal -->
+    <div class="modal" id="trackingModal">
+        <div class="modal-content tracking-view">
+            <button class="close-btn" onclick="closeModal('tracking')"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-search-location"></i> Lacak Pesanan</h2>
+            <div class="tracking-input">
+                <input type="text" id="trackingNumber" placeholder="Masukkan nomor pesanan (contoh: ORD-20240101-ABC123)">
+                <button onclick="trackOrderQuery()"><i class="fas fa-search"></i> Lacak</button>
+            </div>
+            <div class="tracking-result" id="trackingResult"></div>
+        </div>
+    </div>
+
+    <!-- Orders List Modal -->
+    <div class="modal" id="ordersModal">
+        <div class="modal-content orders-view">
+            <button class="close-btn" onclick="closeModal('orders')"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-box"></i> Pesanan Saya</h2>
+            <div class="orders-tabs">
+                <button class="active" onclick="filterOrders('all')">Semua</button>
+                <button onclick="filterOrders('pending')">Menunggu</button>
+                <button onclick="filterOrders('processing')">Diproses</button>
+                <button onclick="filterOrders('shipped')">Dikirim</button>
+                <button onclick="filterOrders('delivered')">Selesai</button>
+            </div>
+            <div class="orders-list" id="ordersList"></div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content auth-box">
+            <button class="close-btn" onclick="closeModal('auth')"><i class="fas fa-times"></i></button>
+            <div class="auth-tabs">
+                <button class="active" id="loginTab" onclick="switchAuthTab('login')">Masuk</button>
+                <button id="registerTab" onclick="switchAuthTab('register')">Daftar</button>
+            </div>
+            
+            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="nama@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="password-input">
+                        <input type="password" name="password" placeholder="••••••••" required>
+                        <i class="fas fa-eye" onclick="togglePassword(this)"></i>
+                    </div>
+                </div>
+                <div class="form-options">
+                    <label><input type="checkbox"> Ingat saya</label>
+                    <a href="#">Lupa password?</a>
+                </div>
+                <button type="submit" class="btn-auth">Masuk</button>
+                <div class="social-auth">
+                    <p>atau masuk dengan</p>
+                    <div class="social-buttons">
+                        <button type="button" class="btn-google"><i class="fab fa-google"></i> Google</button>
+                        <button type="button" class="btn-facebook"><i class="fab fa-facebook-f"></i> Facebook</button>
+                    </div>
+                </div>
+            </form>
+            
+            <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="fullname" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="nama@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Nomor Telepon</label>
+                    <input type="tel" name="phone" placeholder="08123456789" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="password-input">
+                        <input type="password" name="password" placeholder="Minimal 6 karakter" required minlength="6">
+                        <i class="fas fa-eye" onclick="togglePassword(this)"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Konfirmasi Password</label>
+                    <input type="password" name="confirm" placeholder="Ulangi password" required>
+                </div>
+                <div class="form-options">
+                    <label><input type="checkbox" required> Saya setuju dengan <a href="#">Syarat & Ketentuan</a></label>
+                </div>
+                <button type="submit" class="btn-auth">Daftar Sekarang</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeAllSidebars()"></div>
+
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/ai-recommend.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>
